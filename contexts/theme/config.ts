@@ -31,7 +31,10 @@ const mikesTheme = createTheme({
   }
 });
 
-export const themes = {
-  mikes: mikesTheme,
-  mondelez : mondelezTheme
+export const themes = (theme: string) => {
+  return {
+    mikes: mikesTheme,
+    mondelez : mondelezTheme,
+    'localhost:3000': mondelezTheme
+  }[theme]
 }
