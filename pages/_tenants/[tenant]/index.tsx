@@ -1,15 +1,21 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { useTheme } from 'next-themes'
+import { parseCookies } from 'nookies'
+
 import { styled } from '@stitches/react'
 import * as Popover from '@radix-ui/react-popover';
-import styles from '../styles/Home.module.css'
+import styles from '../../../styles/Home.module.css'
+import { GetStaticPaths } from 'next';
+import { IPathProps } from '../../../utils/ssr/types';
+import { withSSG } from '../../../utils/ssr';
 
 interface ButtonProps {
   size: 'big' | 'small'
 }
 
 const Button = styled('button', {
-  backgroundColor: 'Pink',
+  backgroundColor: '$background',
   padding: '12px',
   borderRadius: '8px',
   border: '1px solid purple',
@@ -28,7 +34,11 @@ const Button = styled('button', {
   }
 })
 
-export default function Home() {
+const Home = ({ tenant }: IPathProps) => {
+  const { theme, setTheme } = useTheme();
+  const toggleTheme = () =>
+    setTheme(theme === "light" ? "dark" : "light")
+
   return (
     <div className={styles.container}>
       <Head>
@@ -39,10 +49,10 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to <a href="https://nextjs.org">Next.js! {tenant}</a>
         </h1>
 
-        <Button size="big">Hello World</Button>
+        <Button size="big" onClick={toggleTheme}>Hello World</Button>
         <Button>Hello World</Button>
 
         <p className={styles.description}>
@@ -98,3 +108,22 @@ export default function Home() {
     </div>
   )
 }
+
+export const getStaticPaths: GetStaticPaths<IPathProps> = async () => {
+  return {
+    paths: [],
+    fallback: true
+  }
+}
+
+export const getStaticProps = withSSG(async (ctx, ssgDefaultProps) => {
+  return {
+    props: {
+      ...ssgDefaultProps,
+    },
+    revalidate: 60 * 5 // 5 minutes
+  }
+})
+
+
+export default Home
