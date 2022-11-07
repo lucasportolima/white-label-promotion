@@ -29,14 +29,12 @@ export const middleware = async (request: NextRequest) => {
     // Preview (PR)
     (tenant.startsWith('spider-') && tenant.endsWith('-mercafacil.vercel.app'))
   ) {
-    tenant = 'spider-man.mercafacil.com'
+    url.pathname = `/_tenants/${hostname}`
+
+    return NextResponse.rewrite(url)
+  } else {
+    url.pathname = `/_tenants/${hostname.split('-')[0]}`
+
+    return NextResponse.rewrite(url)
   }
-
-  if (path.startsWith('/admin')) {
-    return NextResponse.redirect(`https://web.${tenant}/admin`)
-  }
-
-  url.pathname = `/_tenants${path}`
-
-  return NextResponse.rewrite(url)
 };
