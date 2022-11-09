@@ -1,4 +1,3 @@
-import type { AppProps } from "next/app";
 import { ThemeProvider as Theme } from 'next-themes'
 import { themes } from './config'
 
